@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration><!-- DB설정(Connection) -->   
+    <typeAliases> 
+      <typeAlias type="sist.com.dto.AudioBookBean" alias = "audioBook"/>
+      <typeAlias type="sist.com.dto.AuthorBean" alias = "author"/>
+      <typeAlias type="sist.com.dto.CategoryBean" alias = "category"/>
+      <typeAlias type="sist.com.dto.EvalBookBean" alias = "evalBook"/>
+      <typeAlias type="sist.com.dto.EvaluationBean" alias = "evaluation"/>
+      <typeAlias type="sist.com.dto.MemberBean" alias = "member"/>
+      <typeAlias type="sist.com.dto.PublisherBean" alias = "publisher"/>
+      <typeAlias type="sist.com.dto.RentalBean" alias = "rental"/>
+      <typeAlias type="sist.com.dto.SubscribeBean" alias = "subscribe"/>
+      <typeAlias type="sist.com.dto.SubscribeListBean" alias = "subscribeList"/>
+      <typeAlias type="sist.com.dto.WishListBean" alias ="wishListBean"/>
+    </typeAliases> 
+    <mappers>
+      <!-- <mapper resource="sist/com/dao/apple-mapper.xml"/> -->
+      <mapper resource="sist/com/dao/mily-mapper.xml"/>
+    </mappers>
+</configuration>
+
+
+
+
+
+

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- *******insert모음 ******* -->
+<!-- 회원가입추가 -->
+<mapper namespace="sist.com.dao.apple">
+
+	<select id="idcheckProcess" resultType="java.lang.String"
+		parameterType="java.lang.String">
+		SELECT PW FROM MEMBER
+		WHERE ID=#{value}
+	</select>
+
+	<insert id="insertmember" parameterType="member">
+		INSERT INTO MEMBER
+		VALUES(#{id},#{birth},#{pw},#{name},#{phonenumber},#{email},#{nickname},null)
+	</insert>
+
+	<select id="booklist"
+		parameterType="sist.com.dto.SearchBookBean"
+		resultType="sist.com.dto.SearchBookBean">
+		SELECT * FROM BOOK
+		NATURAL JOIN AUTHOR
+	</select>
+
+	<select id="selectSearchBook"
+		resultType="sist.com.dto.SearchBookBean"
+		parameterType="java.util.HashMap">
+		SELECT * FROM BOOK
+		NATURAL JOIN AUTHOR
+		<choose>
+			<when
+				test="query!='noQuery' and data!='noData' and query!='all'">
+				WHERE ${query} LIKE '%'||#{data}||'%'
+			</when>
+			<when test="query=='all' and data!='noData'">
+				WHERE AUTHORNAME || BOOKNAME LIKE '%'||#{data}||'%'
+			</when>
+		</choose>
+	</select>
+
+	<select id="selectBookList" parameterType="java.lang.String"
+		resultType="sist.com.dto.SearchBookBean">
+		SELECT * FROM BOOK
+		WHERE BOOKCODE=#{value}
+	</select>
+	<select id="evalList" parameterType="java.lang.String"
+		resultType="sist.com.dto.EvalBookBean">
+		SELECT ID, BOOKNAME, EVALUATION, BOOKCODE, SCORE, WRITEDATE
+		FROM BOOK NATURAL JOIN EVALUATION
+		WHERE BOOKCODE=#{VALUE}
+	</select>
+	<insert id="insertEval"
+		parameterType="sist.com.dto.EvaluationBean">
+		INSERT INTO EVALUATION
+		VALUES(#{id},#{bookcode},#{score},#{evaluation},SYSDATE)
+	</insert>
+
+	<select id="infoList" parameterType="String"
+		resultType="sist.com.dto.MemberBean">
+		SELECT ID,BIRTH,PW,NAME,PHONENUMBER,EMAIL,NICKNAME
+		FROM
+		MEMBER
+		WHERE ID = #{value}
+	</select>
+
+	<update id="updateInfo" parameterType="sist.com.dto.MemberBean">
+		UPDATE MEMBER SET
+		ID=#{id}, PW=#{pw}, NAME=#{name}, NICKNAME=#{nickname},
+		PHONENUMBER=#{phonenumber},
+		EMAIL=#{email}, BIRTH=#{birth},
+		SUBSCRIBECODE=#{subscribecode}
+		WHERE ID=#{id}
+	</update>
+
+	<select id="searchmyEval" parameterType="java.lang.String"
+		resultType="sist.com.dto.EvalBookBean">
+		SELECT
+		e.ID,e.SCORE,e.EVALUATION,e.WRITEDATE,b.BOOKNAME,e.BOOKCODE
+		FROM
+		EVALUATION e
+		JOIN BOOK b
+		ON e.BOOKCODE=b.BOOKCODE
+		WHERE id=#{id}
+	</select>
+
+	<delete id="deleteMyPost"
+		parameterType="sist.com.dto.EvalBookBean">
+		DELETE FROM evaluation
+		WHERE BOOKCODE=#{bookcode} AND
+		ID=#{id}
+	</delete>
+
+	<update id="updateMyPost"
+		parameterType="sist.com.dto.EvalBookBean">
+		UPDATE EVALUATION SET EVALUATION=#{evaluation}
+		WHERE
+		ID=#{id} AND BOOKCODE=#{bookcode}
+	</update>
+
+	<select id="selectSubscribe"
+		resultType="sist.com.dto.SubscribeBean"
+		parameterType="java.util.HashMap">
+		SELECT * FROM SUBSCRIBE
+		<choose>
+			<when test="query!='noQuery' and query!='all'">
+				WHERE SUBSCRIBENAME LIKE '%'||#{query}||'%'
+			</when>
+			<when test="query=='all' and query=='noQuery'">
+				WHERE SUBSCRIBENAME || SUBSCRIBECODE LIKE
+				'%'||#{query}||'%'
+			</when>
+		</choose>
+	</select>
+
+	<insert id="insertSubscribeList"
+		parameterType="sist.com.dto.SubscribeListBean">
+		INSERT INTO SUBSCRIBELIST
+		VALUES(#{id},#{subscribecode},SYSDATE)
+	</insert>
+
+	<insert id="WishListInsert" parameterType="java.util.HashMap">
+		INSERT INTO WISHLIST
+		VALUES(#{id},#{bookcode},SYSDATE)
+	</insert>
+
+	<select id="cateBookSelect" parameterType="java.lang.String"
+		resultType="sist.com.dto.SearchBookBean">
+		SELECT * FROM BOOK
+		NATURAL JOIN AUTHOR
+		WHERE CATEGORYCODE =
+		#{value}
+	</select>
+	<select id="selectWishList" parameterType="java.util.HashMap"
+		resultType="java.lang.String">
+		SELECT ID FROM WISHLIST WHERE ID=#{id} AND
+		BOOKCODE=#{bookcode}
+	</select>
+	<select id="WishList" parameterType="java.lang.String"
+		resultType="sist.com.dto.BookWishListJoinBean">
+		SELECT * FROM WISHLIST
+		NATURAL JOIN BOOK
+		WHERE ID=#{id}
+	</select>
+	<delete id="deleteWishList" parameterType="java.util.HashMap">
+		DELETE FROM WISHLIST
+		WHERE ID=#{id} AND BOOKCODE=#{bookcode}
+	</delete>
+
+	<select id="authorList" resultType="sist.com.dto.AuthorBean">
+		SELECT * FROM AUTHOR
+	</select>
+
+	<select id="publisherList"
+		resultType="sist.com.dto.PublisherBean">
+		SELECT * FROM PUBLISHER
+	</select>
+
+	<select id="categoryList" resultType="sist.com.dto.CategoryBean">
+		SELECT * FROM CATEGORY
+	</select>
+
+
+	<select id="selectPublListAdmin" resultType="publisher">
+		select * from
+		publisher
+
+	</select>
+	<select id="selectAuthorListAdmin" resultType="author">
+		select * from
+		author
+	</select>
+
+	<select id="selectMemberListAdmin"
+		resultType="sist.com.dto.AdminMemberBean">
+
+		select id,substr(birth,1,10)
+		birth,name,phonenumber,email,nickname,subscribecode from member
+	</select>
+
+	<select id="selectEvalBookListAdmin" resultType="evalBook">
+		SELECT ID,
+		BOOKNAME, EVALUATION, BOOKCODE, SCORE, WRITEDATE
+		FROM BOOK NATURAL JOIN
+		EVALUATION
+
+	</select>
+
+	<select id="selectBookListAdmin"
+		resultType="sist.com.dto.AdminBookBean">
+		select
+		b.bookcode,b.bookname,
+		a.authorname authorname,
+		p.publishername publishername
+		,substr(publicationdate,1,10)publicationdate,
+		substr(registrationdate,1,10)registrationdate
+		,c.categoryname
+		categoryname, contents ,link from book b, category c,publisher p ,
+		author a
+		where b.authorcode = a.authorcode and b.publishercode =
+		p.publishercode and
+		b.categorycode = c.categorycode
+	</select>
+
+
+	<select id="checkPublisherAdmin" parameterType="String"
+		resultType="publisher">
+		select * from publisher where publishercode= #{value}
+	</select>
+
+	<insert id="insertPublisherAdmin" parameterType="publisher">
+		insert into
+		publisher(PUBLISHERCODE,PUBLISHERNAME,CALLNUMBER)
+		values(#{publishercode},#{publishername},#{callnumber})
+
+	</insert>
+	<select id="checkAuthorAdmin" parameterType="String"
+		resultType="author">
+		select * from author where authorcode= #{value}
+	</select>
+
+	<insert id="insertAuthorAdmin" parameterType="author">
+		insert into
+		author(authorcode,authorname)
+		values(#{authorcode},#{authorname})
+
+	</insert>
+	<insert id="checkBookAdmin"
+		parameterType="sist.com.dto.BookBean">
+		insert into
+		book(bookcode,bookname,authorcode,publishercode,publicationdate,registrationdate,categorycode,contents,link
+		)
+		values(#{bookcode},#{bookname},#{authorcode},#{publishercode},#{publicationdate},#{registrationdate},#{categorycode},#{Fcontents},#{link})
+
+	</insert>
+
+	<delete id="delBookAdmin" parameterType="String">
+		delete from book where
+		bookcode=#{value}
+	</delete>
+	<delete id="delBookAdminForAuthor" parameterType="String">
+		delete from book where
+		authorcode=#{value}
+	</delete>
+	<delete id="delBookAdminForPublisher" parameterType="String">
+		delete from book where
+		publishercode=#{value}
+	</delete>
+	<delete id="delBookAdminForCategory" parameterType="String">
+		delete from book where
+		categorycode=#{value}
+	</delete>
+	<delete id="delPublisherAdmin" parameterType="String">
+		delete from
+		publisher where publishercode=#{value}
+	</delete>
+	<delete id="delAuthorAdmin" parameterType="String">
+		delete from
+		author where authorcode=#{value}
+	</delete>
+	<delete id="delCategoryAdmin" parameterType="String">
+	delete from
+	Category where categorycode=#{value}
+	</delete>
+</mapper>
